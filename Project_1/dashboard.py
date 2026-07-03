@@ -123,5 +123,9 @@ def main():
                     "text/csv",
                 )
 if __name__ == "__main__":
-    main()
-# run it in the the termianl with "streamlit run project_1/dashboard.py"
+    if st.runtime.exists():
+        main()
+    else:
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, "-m", "streamlit", "run", sys.argv[0]])
