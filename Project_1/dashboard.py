@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from preprocess import preprocess_text, preprocess_to_string
 from train import SentimentLSTM, encode_and_pad
-ARTIFACT_DIR = "project/artifacts"
+ARTIFACT_DIR = "Project_1/artifacts"
 @st.cache_resource
 def load_artifacts():
     with open(f"{ARTIFACT_DIR}/tfidf_vectorizer.pkl", "rb") as f:
@@ -124,3 +124,4 @@ def main():
                 )
 if __name__ == "__main__":
     main()
+# run it in the the termianl with "streamlit run project_1/dashboard.py"
