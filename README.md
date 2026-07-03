@@ -13,8 +13,7 @@ Naive Bayes / Logistic Regression / LSTM → Streamlit dashboard showing
 | `train.py` | Trains Naive Bayes, Logistic Regression, and an LSTM; saves everything to `./artifacts/` |
 | `dashboard.py` | Streamlit app that loads the trained artifacts and predicts sentiment |
 | `make_sample_data.py` | Generates a synthetic labeled dataset (`sample_data.csv`) so you can run the whole thing immediately |
-| `sample_data.csv` | The generated demo dataset (750 rows, 3 balanced classes) |
-
+| `Twitter_training.csv` | The  dataset |
 ## Quickstart
 
 ```bash
