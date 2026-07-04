@@ -168,7 +168,6 @@ if __name__ == "__main__":
     print(f"\nCustomer {sample_id} segment: {df.loc[df.CustomerID == sample_id, 'Segment'].values[0]}")
     print("Item-based CF recommendations:", item_recs)
     print("Similar customers in same segment:", profile_recs)
-    # --- visualization ---
     plot_2d_matplotlib(df, "KMeans_Cluster", f"{OUT}/kmeans_2d.png")
     plot_2d_matplotlib(df, "Segment", f"{OUT}/segments_2d.png")
     plot_3d_matplotlib(df, "KMeans_Cluster", f"{OUT}/kmeans_3d.png")
