@@ -175,3 +175,4 @@ if __name__ == "__main__":
     df.to_csv(f"{OUT}/customer_segments.csv", index=False)
     interactions.to_csv(f"{OUT}/purchase_interactions.csv")
     print("\nSaved: kmeans_2d.png, segments_2d.png, kmeans_3d.png, clusters_3d_interactive.html, customer_segments.csv, purchase_interactions.csv")
+
