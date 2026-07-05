@@ -2,13 +2,24 @@ import os
 import tensorflow as tf
 layers = tf.keras.layers
 models = tf.keras.models
+gpus = tf.config.list_physical_devices('GPU')
+print("GPUs detected:", gpus)
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        print("Memory growth enabled.")
+    except RuntimeError as e:
+        print("Could not set memory growth:", e)
+else:
+    print("WARNING: No GPU detected - training will run on CPU.")
 DATA_DIR = "project_3/PetImages/" 
 IMG_SIZE = (150, 150)
 BATCH_SIZE = 32
 EPOCHS = 15
 VAL_SPLIT = 0.2
 SEED = 42
-MODEL_PATH = "cat_dog_model.h5"
+MODEL_PATH = "project_3/cat_dog_model.h5"
 train_ds = tf.keras.utils.image_dataset_from_directory(
     DATA_DIR,
     validation_split=VAL_SPLIT,
@@ -29,8 +40,10 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
 )
 class_names = train_ds.class_names  # e.g. ['cats', 'dogs']
 print("Classes:", class_names)
+
 train_ds = train_ds.apply(tf.data.experimental.ignore_errors())
 val_ds = val_ds.apply(tf.data.experimental.ignore_errors())
+
 data_augmentation = tf.keras.Sequential([
     layers.RandomFlip("horizontal"),
     layers.RandomRotation(0.1),
@@ -38,8 +51,9 @@ data_augmentation = tf.keras.Sequential([
 ])
 def preprocess(ds, augment=False):
     if augment:
-        ds = ds.map(lambda x, y: (data_augmentation(x, training=True), y),
-                    num_parallel_calls=tf.data.AUTOTUNE)
+        with tf.device('/CPU:0'):
+            ds = ds.map(lambda x, y: (data_augmentation(x, training=True), y),
+                        num_parallel_calls=tf.data.AUTOTUNE)
     ds = ds.map(lambda x, y: (x / 255.0, y),
                 num_parallel_calls=tf.data.AUTOTUNE)
     return ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
@@ -65,22 +79,27 @@ model.compile(
     loss="binary_crossentropy",
     metrics=["accuracy"],
 )
+
 model.summary()
 callbacks = [
     tf.keras.callbacks.EarlyStopping(patience=4, restore_best_weights=True),
     tf.keras.callbacks.ReduceLROnPlateau(patience=2, factor=0.5),
 ]
+
 history = model.fit(
     train_ds,
     validation_data=val_ds,
     epochs=EPOCHS,
     callbacks=callbacks,
 )
+
 val_loss, val_acc = model.evaluate(val_ds)
 print(f"\nValidation accuracy: {val_acc:.4f}")
 print(f"Validation loss: {val_loss:.4f}")
+
 model.save(MODEL_PATH)
-with open("class_names.txt", "w") as f:
+with open("project_3/class_names.txt", "w") as f:
     f.write("\n".join(class_names))
+
 print(f"\nModel saved to {MODEL_PATH}")
 print(f"Class names saved to class_names.txt -> {class_names}")
