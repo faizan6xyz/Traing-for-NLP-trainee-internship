@@ -13,8 +13,7 @@ RNG = np.random.default_rng(42)
 OUT = "/mnt/user-data/outputs"
 def load_data(n=400):
     age = RNG.integers(18, 70, n)
-    income = np.clip(RNG.normal(60, 25, n), 15, 140)          # k$/year
-    # spending score inversely/independently related to income with noise -> creates natural quadrants
+    income = np.clip(RNG.normal(60, 25, n), 15, 140)        
     spending = np.clip(
         50 - 0.3 * (income - 60) + RNG.normal(0, 25, n), 1, 100
     )
